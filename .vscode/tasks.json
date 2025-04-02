@@ -4,14 +4,12 @@
         {
             "label": "Build Raylib Project",
             "type": "shell",
-            "command": "C:/mingw64/bin/g++",
+            "command": "g++",
             "args": [
-                "wfc.cpp",
-                "Tile.cpp",
-                "Grid.cpp",
-                "-o", "wfc.exe",
-                "-I", "C:/raylib/include",
-                "-L", "C:/raylib/lib",
+                "${workspaceFolder}/src/*.cpp",
+                "-o", "${workspaceFolder}/wfc.exe",
+                "-I", "${workspaceFolder}/libs/raylib",
+                "-L", "${workspaceFolder}/libs/raylib",
                 "-lraylib",
                 "-lopengl32",
                 "-lgdi32",
@@ -20,7 +18,19 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Run WFC", 
+            "type": "shell",
+            "command": "${workspaceFolder}/wfc.exe",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+            "dependsOn": "Build Raylib Project",
+            "problemMatcher": []
         }
     ]
 }
