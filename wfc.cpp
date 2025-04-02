@@ -25,6 +25,8 @@ void DrawGrid(const Grid& grid) {
     }
 }
 
+//test
+
 int main() {
     InitWindow(800, 600, "WFC");
 
