@@ -2,16 +2,9 @@
 
 #include "Tile.h"
 #include "Grid.h"
+#include "BasicTiles.h"
 
 #define TILE_SIZE 30
-
-int TTile_data[3][3] = {
-    {1, 1, 1},
-    {0, 1, 0},
-    {0, 1, 0}
-}; 
-Tile TTile(TTile_data);
-
 
 void DrawTile(int x, int y, const Tile& tile) {
     for (int i = 0; i < 3; i++) {
@@ -33,7 +26,7 @@ void DrawGrid(const Grid& grid) {
 }
 
 int main() {
-    InitWindow(800, 600, "Raylib 3x3 Tile Drawing");
+    InitWindow(800, 600, "WFC");
 
     Grid grid(5, 5);
     

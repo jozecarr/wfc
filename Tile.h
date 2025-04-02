@@ -1,17 +1,15 @@
-#ifndef TILE_H  // Include guard
+#ifndef TILE_H
 #define TILE_H
 
 class Tile {
 public:
     int data[3][3];
 
-    // Constructors
-    Tile();  // Default constructor
-    Tile(const int (&_data)[3][3]);  // Constructor with data
+    Tile();
+    Tile(const int (&_data)[3][3]);
 
-    // Flip functions
     void FlipHorizontally();
     void FlipVertically();
 };
 
-#endif  // TILE_H
+#endif

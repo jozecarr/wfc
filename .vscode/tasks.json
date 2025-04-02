@@ -4,18 +4,18 @@
         {
             "label": "Build Raylib Project",
             "type": "shell",
-            "command": "C:/mingw64/bin/g++",  // Path to MinGW g++ compiler
+            "command": "C:/mingw64/bin/g++",
             "args": [
-                "wfc.cpp",                        // Your source file (replace with your actual file)
+                "wfc.cpp",
                 "Tile.cpp",
                 "Grid.cpp",
-                "-o", "wfc.exe",                   // Output executable file
-                "-I", "C:/raylib/include",         // Path to Raylib headers
-                "-L", "C:/raylib/lib",             // Path to Raylib libraries
-                "-lraylib",                        // Link Raylib static library
-                "-lopengl32",                      // Link OpenGL
-                "-lgdi32",                         // Link GDI
-                "-lwinmm"                          // Link Windows Multimedia
+                "-o", "wfc.exe",
+                "-I", "C:/raylib/include",
+                "-L", "C:/raylib/lib",
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm"
             ],
             "group": {
                 "kind": "build",

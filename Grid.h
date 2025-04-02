@@ -1,7 +1,7 @@
-#ifndef GRID_H  // Include guard
+#ifndef GRID_H
 #define GRID_H
 
-#include "Tile.h"  // Include the Tile class
+#include "Tile.h" 
 #include <vector>
 using std::vector;
 
@@ -12,4 +12,4 @@ public:
     Grid(int sizeX, int sizeY);
 };
 
-#endif  // GRID_H
+#endif
