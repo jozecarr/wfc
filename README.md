@@ -43,11 +43,11 @@ My implementation uses c++ with [raylib](https://github.com/raysan5/raylib) to s
    
    Via HTTPS:
    ```bash
-   git clone https://github.com/yourusername/wfc.git
-   ```
-   Via SSH:
-    ```bash
    git clone git@github.com:jozecarr/wfc.git
+   ```
+   Or via HTTPS:
+   ```bash
+   git clone https://github.com/yourusername/wfc.git
    ```
    
 3. **Build the project**: Use ```g++``` to compile the code:
