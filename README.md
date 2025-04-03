@@ -35,6 +35,8 @@ The **Wave Function Collapse** algorithm works by:
 
 The goal of the algorithm is to generate a grid where local tile patterns are consistent with the input, but the overall grid can be unique and large, and follows adjacency rules.
 
+My implementation uses ```C++``` with ```raylib``` to simulate and render the grid. 
+
 ### Installation
 
 1. **Clone the repository**:
