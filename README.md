@@ -8,6 +8,8 @@ This implementation allows you to generate tile-based grids with constraints, me
 
 This is a work in progress, something to do whilst I look for a job.
 
+Currently this is only working for windows, but a linux implementation will be available.
+
 ## Table of Contents
 
 1. [Features](#features)
@@ -56,9 +58,6 @@ My implementation uses c++ with [raylib](https://github.com/raysan5/raylib) to s
    cd wfc
    g++ src/*.cpp -o wfc.exe -I ./libs/raylib -L ./libs/raylib -lraylib -lopengl32 -lgdi32 -lwinmm
    ```
-
-   Currently this is only working for windows, but a linux implementation will be available.
-
    Alternatively, the repo contains a ```.vscode``` folder, so if you're using vscode, just do ```Ctrl + Shift + B```
    
    (or do ```Ctrl + Shift + P``` and search for ```Tasks: Run Build Task``` and click that).
