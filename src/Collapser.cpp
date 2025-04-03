@@ -2,20 +2,48 @@
 #include "Tile.h"
 #include <raylib.h>
 
-Collapser::Collapser() : initGrid(5, 5) {
+Collapser::Collapser() : grid(5, 5) {
     tileSize = 20;
 }
 
-void Collapser::init(const Grid& _initGrid, int windowSizeX, int windowSizeY, const char* windowTitle) {
-    InitWindow(windowSizeX, windowSizeY, windowTitle);
-    initGrid = _initGrid;
+void Collapser::ResizeEntropies(int x, int y, int z) {
+    entropies.resize(x);  // Resize to X rows (outermost dimension)
+    for (int i = 0; i < x; ++i) {
+        entropies[i].resize(y);  // Resize each row to Y columns
+        for (int j = 0; j < y; ++j) {
+            entropies[i][j].resize(z, 0);  // Resize each cell (depth Z) and initialize with 0
+        }
+    }
+}
 
-    int gridWidth = initGrid.tiles.size();
-    int gridHeight = (gridWidth > 0) ? initGrid.tiles[0].size() : 0;
+void Collapser::InitEntropies() {
+    ResizeEntropies(grid.sizeX, grid.sizeY, tileset.size());
+
+    for (int i = 0; i < grid.sizeX; i++) {
+        for (int j = 0; j < grid.sizeY; j++) {
+            if (grid.tiles[i][j].set) {
+                int index = FindTileIndex(grid.tiles[i][j], tileset);
+                if (index != -1) {
+                    entropies[i][j] = {index};
+                }
+            }
+        }
+    }
+}
+
+void Collapser::Init(const Grid& _grid, const vector<Tile>& _tileset, int windowSizeX, int windowSizeY, const char* windowTitle) {
+    InitWindow(windowSizeX, windowSizeY, windowTitle);
+    grid = _grid;
+    tileset = _tileset;
+
+    int gridWidth = grid.tiles.size();
+    int gridHeight = (gridWidth > 0) ? grid.tiles[0].size() : 0;
 
     if (gridWidth > 0 && gridHeight > 0) {
         tileSize = std::min(windowSizeX / (gridWidth * 3), windowSizeY / (gridHeight * 3));
     }
+
+    InitEntropies();
 }
 
 
@@ -51,7 +79,7 @@ void Collapser::run(int rate) {
         ClearBackground(BLACK);
 
         // TODO MAIN STUFF
-        DrawGrid(initGrid);
+        DrawGrid(grid);
 
         EndDrawing();
     }

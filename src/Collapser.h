@@ -4,13 +4,19 @@
 #include "Tile.h"
 #include "Grid.h"
 
+
 class Collapser {
 public:
     Collapser();
     int tileSize;
-    Grid initGrid;
+    Grid grid;
+    vector<Tile> tileset;
+    vector<vector<vector<int>>> entropies;
 
-    void init(const Grid& _initGrid, int windowSizeX = 1000, int windowSizeY = 1000,  const char* windowTitle = "WFC");
+    void ResizeEntropies(int x, int y, int z);
+    void InitEntropies();
+
+    void Init(const Grid& _grid, const vector<Tile>& _tileset, int windowSizeX = 1000, int windowSizeY = 1000,  const char* windowTitle = "WFC");
 
     void run(int rate = 1);
 

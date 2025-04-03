@@ -10,25 +10,25 @@ int TTile_data[3][3] = {
 }; 
 Tile TTile(TTile_data);
 
-int VertMidLineTile_data[3][3] = {
+int vertMidLineTile_data[3][3] = {
     {0, 1, 0},
     {0, 1, 0},
     {0, 1, 0}
 };
-Tile VertMidLineTile(VertMidLineTile_data);
+Tile vertMidLineTile(vertMidLineTile_data);
 
-int HorizMidLineTile_data[3][3] = {
+int horizMidLineTile_data[3][3] = {
     {0, 0, 0},
     {1, 1, 1},
     {0, 0, 0}
 };
-Tile HorizMidLineTile(HorizMidLineTile_data);
+Tile horizMidLineTile(horizMidLineTile_data);
 
-int LeftLineTile_data[3][3] = {
+int leftLineTile_data[3][3] = {
     {1, 0, 0},
     {1, 0, 0},
     {1, 0, 0}
 };
-Tile LeftLineTile(LeftLineTile_data);
+Tile leftLineTile(leftLineTile_data);
 
 #endif 

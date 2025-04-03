@@ -7,6 +7,8 @@ using std::vector;
 
 class Grid {
 public:
+    int sizeX;
+    int sizeY;
     vector<vector<Tile>> tiles;
 
     Grid();
