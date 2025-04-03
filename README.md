@@ -41,7 +41,7 @@ My implementation uses c++ with [raylib](https://github.com/raysan5/raylib) to s
 
 1. **Clone the repository**:
    
-   Via HTTPS:
+   Via SSH:
    ```bash
    git clone git@github.com:jozecarr/wfc.git
    ```
