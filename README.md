@@ -40,6 +40,7 @@ My implementation uses c++ with [raylib](https://github.com/raysan5/raylib) to s
 ### Installation
 
 1. **Clone the repository**:
+   
    Via HTTPS:
    ```bash
    git clone https://github.com/yourusername/wfc.git
