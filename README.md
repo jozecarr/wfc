@@ -35,19 +35,21 @@ The **Wave Function Collapse** algorithm works by:
 
 The goal of the algorithm is to generate a grid where local tile patterns are consistent with the input, but the overall grid can be unique and large, and follows adjacency rules.
 
+My implementation uses c++ with [raylib](https://github.com/raysan5/raylib) to simulate and render the grid. 
+
 ### Installation
 
 1. **Clone the repository**:
 
    ```bash
    git clone https://github.com/yourusername/wfc.git
-   cd wfc
    ```
    
 2. **Build the project**: Use ```g++``` to compile the code:
 
    ```
-   g++ src/*.cpp -o wfc.exe -I path_to_raylib/include -L path_to_raylib/lib -lraylib -lopengl32 -lgdi32 -lwinmm
+   cd wfc
+   g++ src/*.cpp -o wfc.exe -I ./libs/raylib -L ./libs/raylib -lraylib -lopengl32 -lgdi32 -lwinmm
    ```
 
    Alternatively, the repo contains a ```.vscode``` folder, so if you're using vscode, just do ```Ctrl + Shift + B```
