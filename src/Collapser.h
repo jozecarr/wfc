@@ -8,7 +8,7 @@
 class Collapser {
 public:
     Collapser();
-    int tileSize;
+    int cellSize;
     Grid grid;
     vector<Tile> tileset;
     vector<vector<vector<int>>> entropies;
@@ -21,7 +21,8 @@ public:
     void run(int rate = 1);
 
     void DrawTile(int x, int y, const Tile& tile);
-    void DrawGrid(const Grid& grid);
+    void DrawGrid();
+    void ShowEntropies();
 };
 
 #endif
