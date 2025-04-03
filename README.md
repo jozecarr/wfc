@@ -14,7 +14,8 @@ Currently this is only working for windows, but a linux implementation will be a
 
 1. [Features](#features)
 2. [How It Works](#how-it-works)
-3. [Installation & Usage](#installation)
+3. [Requirements](#requirements)
+4. [Installation & Usage](#installation)
 
 ## Features
 
@@ -39,7 +40,11 @@ The goal of the algorithm is to generate a grid where local tile patterns are co
 
 My implementation uses c++ with [raylib](https://github.com/raysan5/raylib) to simulate and render the grid. 
 
-### Installation
+### Requirements
+
+1. ```mingw-w64``` [from mingw-w64](https://www.mingw-w64.org)
+
+### Installation & Usage
 
 1. **Clone the repository**:
    
