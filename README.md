@@ -47,7 +47,7 @@ My implementation uses c++ with [raylib](https://github.com/raysan5/raylib) to s
    ```
    Or via HTTPS:
    ```bash
-   git clone https://github.com/yourusername/wfc.git
+   git clone https://github.com/jozecarr/wfc.git
    ```
    
 3. **Build the project**: Use ```g++``` to compile the code:
