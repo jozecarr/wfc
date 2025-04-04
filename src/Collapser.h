@@ -18,11 +18,18 @@ public:
 
     void Init(const Grid& _grid, const vector<Tile>& _tileset, int windowSizeX = 1000, int windowSizeY = 1000,  const char* windowTitle = "WFC");
 
-    void run(int rate = 1);
-
     void DrawTile(int x, int y, const Tile& tile);
     void DrawGrid();
     void ShowEntropies();
+
+    bool CheckAdjEqual(const bool (&adjacentSubtiles)[2][3]);
+    void GetAdjSubtiles(int aX, int aY, int bX, int bY, bool (&adjacentSubtiles)[2][3]);
+    bool AdjacencyAllowed(int aX, int aY, int bX, int bY);
+
+    void RecalculateEntropies();
+
+    void run(int rate = 1);
+
 };
 
 #endif

@@ -6,7 +6,7 @@ using std::vector;
 
 class Tile {
 public:
-    int data[3][3];
+    bool data[3][3];
     bool set;
 
     Tile();
