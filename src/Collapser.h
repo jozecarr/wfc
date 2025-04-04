@@ -23,10 +23,10 @@ public:
     void ShowEntropies();
 
     bool CheckAdjEqual(const bool (&adjacentSubtiles)[2][3]);
-    void GetAdjSubtiles(int aX, int aY, int bX, int bY, bool (&adjacentSubtiles)[2][3]);
-    bool AdjacencyAllowed(int aX, int aY, int bX, int bY);
+    void GetAdjSubtiles(int aX, int aY, int bX, int bY, const Tile &candidate, bool (&adjacentSubtiles)[2][3]);
+    bool AdjacencyAllowed(int aX, int aY, int bX, int bY, const Tile &candidate);
 
-    void RecalculateEntropies();
+    void UpdateAdjEntropies(int x, int y); // for when a tile is set, recalu
 
     void run(int rate = 1);
 

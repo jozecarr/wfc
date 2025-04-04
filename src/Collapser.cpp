@@ -1,8 +1,10 @@
 #include "Collapser.h"
 #include "Tile.h"
+
 #include <raylib.h>
 #include <stdio.h>
 #include <cmath>
+#include <iostream>
 
 Collapser::Collapser() : grid(5, 5) {
     cellSize = 20;
@@ -68,8 +70,9 @@ void Collapser::DrawGrid() {
 
     for (int i = 0; i < gridWidth; i++) {
         for (int j = 0; j < gridHeight; j++) {
-            int x = i * 3 * cellSize;
-            int y = j * 3 * cellSize;
+            int x = i * 3 * cellSize; 
+            int y = (gridHeight - j - 1) * 3 * cellSize; // invert y
+
             DrawTile(x, y, grid.tiles[i][j]);
         }
     }
@@ -82,9 +85,13 @@ void Collapser::ShowEntropies() {
             sprintf(text, "%d", entropies[x][y].size());
 
             int posX = x * cellSize * 3;
-            int posY = y * cellSize * 3;
-            
-            DrawText(text, posX + 5, posY + 5, 20, GREEN);
+            int posY = (grid.sizeY - y - 1) * cellSize * 3;  // invert y
+
+            int textWidth = MeasureText(text, 20);
+            int textHeight = 20;
+
+            DrawText(text, posX + (cellSize * 3 - textWidth) / 2, posY + (cellSize * 3 - textHeight) / 2, 20, GREEN);
+
             DrawRectangleLines(posX, posY, cellSize * 3, cellSize * 3, RED);
         }
     }
@@ -96,7 +103,7 @@ bool Collapser::CheckAdjEqual(const bool (&adjacentSubtiles)[2][3]) {
     } return true;
 }
 
-void Collapser::GetAdjSubtiles(int aX, int aY, int bX, int bY, bool (&adjSubtiles)[2][3]) {
+void Collapser::GetAdjSubtiles(int aX, int aY, int bX, int bY, const Tile &candidate, bool (&adjSubtiles)[2][3]) {
     int dX = bX - aX;
     int dY = bY - aY;
 
@@ -113,25 +120,38 @@ void Collapser::GetAdjSubtiles(int aX, int aY, int bX, int bY, bool (&adjSubtile
         coordinate of the subtiles will be 2, as this is the rightmost column of tile a. */
 
         adjSubtiles[0][i] = grid.tiles[aX][aY].data[saX][saY];
-        adjSubtiles[1][i] = grid.tiles[aX][aY].data[sbX][sbY];
+        adjSubtiles[1][i] = candidate.data[sbX][sbY];
     }
 }
 
-bool Collapser::AdjacencyAllowed(int aX, int aY, int bX, int bY) {
+bool Collapser::AdjacencyAllowed(int aX, int aY, int bX, int bY, const Tile &candidate) {
     int dX = bX - aX;
     int dY = bY - aY;
 
-    if (abs(dX) + abs(dY) == 2) return true; // TODO maybe add diagonal adjacency rules, but for now im not
+    if (abs(dX) + abs(dY) == 2) return true; // TODO maybe add diagonal adjacency rules, but for now, no
     
     bool adjacentSubtiles[2][3];
-    GetAdjSubtiles(aX, aY, bX, bY, adjacentSubtiles);
+    GetAdjSubtiles(aX, aY, bX, bY, candidate, adjacentSubtiles);
     return CheckAdjEqual(adjacentSubtiles);
 }
 
-// TODO function to recalculate the entropy of a tile based on its neighbors
-
-void Collapser::RecalculateEntropies() {
+void Collapser::UpdateAdjEntropies(int x, int y) { //
+    int dirs[4][2] = {{0,1}, {1,0}, {0,-1}, {-1,0}};
     
+    for(const auto& i : dirs) {
+        int bX = x + i[0];
+        int bY = y + i[1];
+
+        if (bX >= 0 && bX < grid.sizeX && bY >= 0 && bY < grid.sizeY && !grid.tiles[bX][bY].set) { // make sure the neighbor exists in the grid and isnt already set
+            vector<int> tempEntropy;
+            for(int c : entropies[bX][bY]) { // check each candidate of a cell, if its valid, keep it
+                if (AdjacencyAllowed(x, y, bX, bY, tileset[c])) {
+                    tempEntropy.push_back(c);
+                }
+            }
+            entropies[bX][bY] = tempEntropy;
+        }
+    }    
 }
 
 void Collapser::run(int rate) {
@@ -143,6 +163,10 @@ void Collapser::run(int rate) {
         DrawGrid();
 
         ShowEntropies();
+        
+        //TODO wtf?
+        UpdateAdjEntropies(0, 0);
+        
         
 
         EndDrawing();
