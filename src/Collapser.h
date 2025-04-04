@@ -26,7 +26,7 @@ public:
     void GetAdjSubtiles(int aX, int aY, int bX, int bY, const Tile &candidate, bool (&adjacentSubtiles)[2][3]);
     bool AdjacencyAllowed(int aX, int aY, int bX, int bY, const Tile &candidate);
 
-    void UpdateAdjEntropies(int x, int y); // for when a tile is set, recalculate neighboring entropies
+    void UpdateAdjEntropies(int x, int y); // for when a tile is set, recalculate neighboring entropies.
 
     void run(int rate = 1);
 
