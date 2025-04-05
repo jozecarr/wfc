@@ -15,7 +15,7 @@ void Collapser::ResizeEntropies(int x, int y, int z) {
     for (int i = 0; i < x; ++i) {
         entropies[i].resize(y);  // Resize each row to Y columns
         for (int j = 0; j < y; ++j) {
-            entropies[i][j].resize(z, 0);  // Resize each cell (depth Z) and initialize with 0
+            entropies[i][j].resize(z, true);  // Resize each cell (depth Z) and initialize with true
         }
     }
 }
@@ -28,11 +28,11 @@ void Collapser::InitEntropies() {
             if (grid.tiles[i][j].set) {
                 int index = FindTileIndex(grid.tiles[i][j], tileset);
                 if (index != -1) {
-                    entropies[i][j] = {index};
+                    entropies[i][j][index] = true;
                 }
             } else {
                 for (int k = 0; k < tileset.size(); k++) {
-                    entropies[i][j][k] = k;
+                    entropies[i][j][k] = ;
                 }
                 
             }
@@ -93,11 +93,18 @@ void Collapser::DrawGrid() {
     }
 }
 
+int Collapser::GetEntropy(int x, int y) {
+    int entropy = 0;
+    for (int i = 0; i < tileset.size(); i++) {
+        if (entropies[x][y][i]) entropy++;
+    } return entropy;
+}
+
 void Collapser::DrawEntropies() {
     for (int x = 0; x < grid.sizeX; x++) {
         for (int y = 0; y < grid.sizeY; y++) {
             char text[10];  
-            sprintf(text, "%d", entropies[x][y].size());
+            sprintf(text, "%d", GetEntropy(x,y));
 
             int posX = x * cellSize * 3;
             int posY = (grid.sizeY - y - 1) * cellSize * 3;  // invert y
@@ -140,25 +147,53 @@ bool Collapser::AdjacencyAllowed(int aX, int aY, int bX, int bY, const Tile &til
     return true;
 }
 
-void Collapser::UpdateAdjEntropies(int x, int y) {
-    int dirs[4][2] = {{0,1}, {1,0}, {0,-1}, {-1,0}};
-    
-    for(const auto& i : dirs) {
-        int bX = x + i[0];
-        int bY = y + i[1];
+bool Collapser::CheckCanChangeEnts(int x, int y) {
+    return (x >= 0 && x < grid.sizeX && y >= 0 && y < grid.sizeY && !grid.tiles[x][y].set);
+}
 
-        if (bX >= 0 && bX < grid.sizeX && bY >= 0 && bY < grid.sizeY && !grid.tiles[bX][bY].set) { // make sure the neighbor exists in the grid and isnt already set
-            printf("<----------CHECKING CELL (%d, %d)---------->\n", bX, bY);
-            vector<int> tempEntropy;
-            for(int c : entropies[bX][bY]) { // check each candidate of a cell, if its valid, keep it
-                if (AdjacencyAllowed(x, y, bX, bY, tileset[c])) {
-                    tempEntropy.push_back(c);
-                    printf("%d ALLOWED\n", c);
-                } else printf("%d NOT ALLOWED\n", c);
+bool Collapser::UpdateAdjEntropies(int x, int y) {
+    int dirs[4][2] = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+
+    vector<bool> tempEntropies[4] = {{},{},{},{}};
+    
+    for(int i = 0; i < 4; i++) {
+        bool noValidsFlag = true;
+        int bX = x + dirs[i][0];
+        int bY = y + dirs[i][1];
+
+        if (CheckCanChangeEnts(bX, bY)) { // make sure the neighbor exists in the grid and isnt already set
+            for(int j = 0; j < tileset.size(); j++) { // check each candidate of a cell, if its valid, keep it
+                if (entropies[bX][bY][j] && AdjacencyAllowed(x, y, bX, bY, tileset[j])) {
+                    tempEntropies[i].push_back(true);
+                    noValidsFlag = false;
+                } else {
+                    tempEntropies[i].push_back(false);
+                }
             }
-            entropies[bX][bY] = tempEntropy;
+        } else noValidsFlag = false;
+        if (noValidsFlag) return false;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        int bX = x + dirs[i][0];
+        int bY = y + dirs[i][1];
+
+        if (CheckCanChangeEnts(bX, bY)) {
+            entropies[bX][bY] = tempEntropies[i];
         }
-    }    
+    }
+    
+    return true;
+}
+
+void Collapser::Collapse(const vector<pair<int, int>> &setCells) {
+    for (const auto &i : setCells) {
+        if(UpdateAdjEntropies(i.first, i.second)){
+            
+        } else {
+            grid.tiles[i.first][i.second] = Tile();
+        }
+    }
 }
 
 void Collapser::run(int rate) {
