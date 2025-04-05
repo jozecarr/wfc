@@ -186,10 +186,25 @@ bool Collapser::UpdateAdjEntropies(int x, int y) {
     return true;
 }
 
+pair<int, int> Collapser::GetLowestEntropyNeighbor(int x, int y) {
+    int dirs[4][2] = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+    int index = 0;
+    int val = GetEntropy(x + dirs[0][0], y + dirs[0][1]);
+    for (int i = 1; i < 4; i++) {
+        int tempVal = GetEntropy(x + dirs[i][0], y + dirs[i][1]) < val;
+        if (tempVal < val) {
+            index = i; 
+            val = tempVal;
+        }   
+    }
+    return {x + dirs[index][0], y + dirs[index][1]};
+}
+
 void Collapser::Collapse(const vector<pair<int, int>> &setCells) {
     for (const auto &i : setCells) {
         if(UpdateAdjEntropies(i.first, i.second)){
-            
+            pair<int,int> lowestEntropyNeighbor = GetLowestEntropyNeighbor(i.first, i.second);
+            //TODO continue
         } else {
             grid.tiles[i.first][i.second] = Tile();
         }

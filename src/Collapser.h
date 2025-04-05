@@ -32,7 +32,7 @@ public:
 
     bool UpdateAdjEntropies(int x, int y); // for when a tile is set, recalculate neighboring entropies.
 
-    
+    pair<int, int> GetLowestEntropyNeighbor(int x, int y);
 
     void Collapse(const vector<pair<int, int>> &setCells);
 
