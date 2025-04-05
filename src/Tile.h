@@ -10,7 +10,7 @@ public:
     bool set;
 
     Tile();
-    Tile(const int (&_data)[3][3]);
+    Tile(const bool (&_data)[3][3]);
 
     bool operator==(const Tile& other) const;
 

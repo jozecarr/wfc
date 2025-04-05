@@ -30,6 +30,11 @@ void Collapser::InitEntropies() {
                 if (index != -1) {
                     entropies[i][j] = {index};
                 }
+            } else {
+                for (int k = 0; k < tileset.size(); k++) {
+                    entropies[i][j][k] = k;
+                }
+                
             }
         }
     }
@@ -60,6 +65,16 @@ void Collapser::DrawTile(int x, int y, const Tile& tile) {
     }
 }
 
+void Collapser::PrintTile(const Tile& tile) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            char subtile = (tile.data[i][j] == 1) ? '1' : '0';
+            printf("%c", subtile);
+        }
+        printf("\n");
+    }
+}
+
 void Collapser::DrawGrid() {
     int gridWidth = grid.tiles.size();
     int gridHeight = (gridWidth > 0) ? grid.tiles[0].size() : 0;
@@ -78,7 +93,7 @@ void Collapser::DrawGrid() {
     }
 }
 
-void Collapser::ShowEntropies() {
+void Collapser::DrawEntropies() {
     for (int x = 0; x < grid.sizeX; x++) {
         for (int y = 0; y < grid.sizeY; y++) {
             char text[10];  
@@ -97,15 +112,13 @@ void Collapser::ShowEntropies() {
     }
 }
 
-bool Collapser::CheckAdjEqual(const bool (&adjacentSubtiles)[2][3]) {
-    for (int i = 0; i < 3; i++) {
-        if (adjacentSubtiles[0][i] != adjacentSubtiles[1][i]) return false;
-    } return true;
-}
-
-void Collapser::GetAdjSubtiles(int aX, int aY, int bX, int bY, const Tile &candidate, bool (&adjSubtiles)[2][3]) {
+bool Collapser::AdjacencyAllowed(int aX, int aY, int bX, int bY, const Tile &tileB) {
     int dX = bX - aX;
     int dY = bY - aY;
+
+    if (abs(dX) + abs(dY) == 2) return true; // TODO maybe add diagonal adjacency rules, but for now, no
+
+    const Tile& tileA = grid.tiles[aX][aY];
 
     for(int i = 0; i < 3; i++) {  
         int saX = (dY != 0) ? i : (dX == 1) ? 2 : 0;
@@ -119,23 +132,15 @@ void Collapser::GetAdjSubtiles(int aX, int aY, int bX, int bY, const Tile &candi
         if not, it then checks the other axis, for example, in saX, if b is to the right, then the x
         coordinate of the subtiles will be 2, as this is the rightmost column of tile a. */
 
-        adjSubtiles[0][i] = grid.tiles[aX][aY].data[saX][saY];
-        adjSubtiles[1][i] = candidate.data[sbX][sbY];
+        if (tileA.data[saY][saX] != tileB.data[sbY][sbX]) {  
+            return false;
+        }
     }
+
+    return true;
 }
 
-bool Collapser::AdjacencyAllowed(int aX, int aY, int bX, int bY, const Tile &candidate) {
-    int dX = bX - aX;
-    int dY = bY - aY;
-
-    if (abs(dX) + abs(dY) == 2) return true; // TODO maybe add diagonal adjacency rules, but for now, no
-    
-    bool adjacentSubtiles[2][3];
-    GetAdjSubtiles(aX, aY, bX, bY, candidate, adjacentSubtiles);
-    return CheckAdjEqual(adjacentSubtiles);
-}
-
-void Collapser::UpdateAdjEntropies(int x, int y) { //
+void Collapser::UpdateAdjEntropies(int x, int y) {
     int dirs[4][2] = {{0,1}, {1,0}, {0,-1}, {-1,0}};
     
     for(const auto& i : dirs) {
@@ -143,11 +148,13 @@ void Collapser::UpdateAdjEntropies(int x, int y) { //
         int bY = y + i[1];
 
         if (bX >= 0 && bX < grid.sizeX && bY >= 0 && bY < grid.sizeY && !grid.tiles[bX][bY].set) { // make sure the neighbor exists in the grid and isnt already set
+            printf("<----------CHECKING CELL (%d, %d)---------->\n", bX, bY);
             vector<int> tempEntropy;
             for(int c : entropies[bX][bY]) { // check each candidate of a cell, if its valid, keep it
                 if (AdjacencyAllowed(x, y, bX, bY, tileset[c])) {
                     tempEntropy.push_back(c);
-                }
+                    printf("%d ALLOWED\n", c);
+                } else printf("%d NOT ALLOWED\n", c);
             }
             entropies[bX][bY] = tempEntropy;
         }
@@ -162,12 +169,7 @@ void Collapser::run(int rate) {
         // TODO MAIN STUFF
         DrawGrid();
 
-        ShowEntropies();
-        
-        //TODO wtf?
-        UpdateAdjEntropies(0, 0);
-        
-        
+        DrawEntropies();
 
         EndDrawing();
     }

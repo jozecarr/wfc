@@ -9,7 +9,7 @@ Tile::Tile() {
     }
 }
 
-Tile::Tile(const int (&_data)[3][3]) {
+Tile::Tile(const bool (&_data)[3][3]) {
     set = true;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
