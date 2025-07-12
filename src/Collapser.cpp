@@ -1,5 +1,6 @@
 #include "Collapser.h"
 #include "Tile.h"
+#include "randnum.h"
 
 #include <raylib.h>
 #include <stdio.h>
@@ -32,7 +33,7 @@ void Collapser::InitEntropies() {
                 }
             } else {
                 for (int k = 0; k < tileset.size(); k++) {
-                    entropies[i][j][k] = ;
+                    entropies[i][j][k] = k;
                 }
                 
             }
@@ -188,40 +189,87 @@ bool Collapser::UpdateAdjEntropies(int x, int y) {
 
 pair<int, int> Collapser::GetLowestEntropyNeighbor(int x, int y) {
     int dirs[4][2] = {{0,1}, {1,0}, {0,-1}, {-1,0}};
-    int index = 0;
-    int val = GetEntropy(x + dirs[0][0], y + dirs[0][1]);
+    int index = -1;
+    int val = 999;
     for (int i = 1; i < 4; i++) {
-        int tempVal = GetEntropy(x + dirs[i][0], y + dirs[i][1]) < val;
-        if (tempVal < val) {
-            index = i; 
-            val = tempVal;
-        }   
+        int bX = x + dirs[i][0];
+        int bY = y + dirs[i][1];
+
+        if (CheckCanChangeEnts(bX, bY)) {
+            int tempVal = GetEntropy(bX, bY) < val;
+            if (tempVal < val) {
+                index = i; 
+                val = tempVal;
+            }  
+        } 
     }
     return {x + dirs[index][0], y + dirs[index][1]};
 }
 
-void Collapser::Collapse(const vector<pair<int, int>> &setCells) {
+int GetFirstTrueIndex(vector<bool> bools) {
+    for (int i = 0; i < bools.size(); i++) {
+        if(bools[i]) return i;
+    } return -1;
+}
+
+vector<int> GetTrueIndices(vector<bool> bools) {
+    vector<int> indices = {};
+    for (size_t i = 0; i < bools.size(); i++) {
+        if(bools[i]) indices.push_back(i);
+    } return indices;
+}
+
+int GetRandomTrueIndex(vector<bool> bools) {
+    vector<int> trueIndices = GetTrueIndices(bools);
+    if(trueIndices.size() == 0) return -1;
+    randnum r = randnum();
+    return r.gen(trueIndices.size());
+}
+
+vector<pair<int, int>> Collapser::Collapse(const vector<pair<int, int>> &setCells) {
+    vector<pair<int, int>> newSetCells = {};
+
     for (const auto &i : setCells) {
+        printf("first loop\n");
         if(UpdateAdjEntropies(i.first, i.second)){
-            pair<int,int> lowestEntropyNeighbor = GetLowestEntropyNeighbor(i.first, i.second);
-            //TODO continue
+            printf("updated entropies - no invalids\n");
+            pair<int,int> lowestEntNeighb = GetLowestEntropyNeighbor(i.first, i.second);
+            int ftIndex = GetRandomTrueIndex(entropies[lowestEntNeighb.first][lowestEntNeighb.second]);
+            if (ftIndex != -1) {
+                printf("got here okay: len = (%d, %d) trying tile %d\n", lowestEntNeighb.first, lowestEntNeighb.second, ftIndex);
+                grid.tiles[lowestEntNeighb.first][lowestEntNeighb.second] = tileset[ftIndex];
+                newSetCells.push_back({lowestEntNeighb.first, lowestEntNeighb.second});
+            }
+            
         } else {
+            printf("updated entropies - yes invalids\n");
             grid.tiles[i.first][i.second] = Tile();
         }
     }
+
+    return newSetCells;
 }
 
 void Collapser::run(int rate) {
+    double frameCount = 0;
+    vector<pair<int, int>> setCells = {{6,2},{8,9}};
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        // TODO MAIN STUFF
+        if (fmod(frameCount, 180) == 0) {
+            setCells = Collapse(setCells);
+        }
+        
+
         DrawGrid();
 
         DrawEntropies();
 
         EndDrawing();
+
+        frameCount++;
     }
 
     CloseWindow();

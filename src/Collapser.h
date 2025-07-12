@@ -34,7 +34,7 @@ public:
 
     pair<int, int> GetLowestEntropyNeighbor(int x, int y);
 
-    void Collapse(const vector<pair<int, int>> &setCells);
+    vector<pair<int, int>> Collapse(const vector<pair<int, int>> &setCells);
 
     void run(int rate = 1);
 

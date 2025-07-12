@@ -30,9 +30,6 @@ int main() {
     Collapser collapser;
     collapser.Init(grid, tileset);
 
-    collapser.UpdateAdjEntropies(6,2);
-    collapser.UpdateAdjEntropies(8,9);    
-
     collapser.run();
 
     return 0;
